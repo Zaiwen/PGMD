@@ -1,0 +1,86 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* 防止滚动条出现时页面抖动 */
+body {
+  width: calc(100vw - 17px);
+  overflow-x: hidden;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
+}
+
+/* 侧边导航栏闪烁动画 */
+.flash {
+  animation: flash 1s 1;
+}
+
+@keyframes flash {
+  0% {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  }
+  25% {
+    box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.2);
+  }
+  75% {
+    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.2);
+  }
+  100% {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* 左滑动画 */
+.leftFade-enter-from {
+  opacity: 0;
+  transform: translateX(-30%);
+}
+
+.leftFade-enter-to {
+  transform: translateX(0%);
+  opacity: 1;
+}
+
+.leftFade-leave-active,
+.leftFade-enter-active,
+.rightFade-leave-active,
+.rightFade-enter-active {
+  transition: all 0.16s ease-in-out;
+}
+
+.leftFade-leave-from {
+  transform: translateX(0%);
+  opacity: 1;
+}
+
+.leftFade-leave-to {
+  transform: translateX(30%);
+  opacity: 0;
+}
+
+/* 右滑动画 */
+
+.rightFade-enter-from {
+  opacity: 0;
+  transform: translateX(30%);
+}
+
+.rightFade-enter-to {
+  transform: translateX(0%);
+  opacity: 1;
+}
+
+.rightFade-leave-from {
+  transform: translateX(0%);
+  opacity: 1;
+}
+
+.rightFade-leave-to {
+  transform: translateX(-30%);
+  opacity: 0;
+}
