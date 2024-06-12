@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.swinedatebaseproject.mapper.NutrientMapper">
+
+
+
+    <resultMap id="nutrientCompositionResultMap" type="com.example.swinedatebaseproject.domain.NutrientComposition">
+        <id property="nutrientId" column="Nutrient_id"/>
+        <result property="bioProject" column="Bio_Project"/>
+        <result property="dm" column="Dm"/>
+        <result property="cp" column="Cp"/>
+        <result property="ee" column="Ee"/>
+        <result property="cf" column="Cf"/>
+        <result property="nfe" column="Nfe"/>
+        <result property="ash" column="Ash"/>
+        <result property="ndf" column="Ndf"/>
+        <result property="adf" column="Adf"/>
+        <result property="starch" column="Starch"/>
+        <result property="ca" column="Ca"/>
+        <result property="tp" column="Tp"/>
+        <result property="ep" column="Ep"/>
+        <result property="descriptiveInfo" column="Descriptive_Info"/>
+        <result property="linkDoi" column="Link_Doi"/>
+        <result property="head" column="head"/>
+        <result property="nutrientIndex" column="Nutrient_index"/>
+    </resultMap>
+
+
+    <select id="getNutrientCompositionByBioProject" resultMap="nutrientCompositionResultMap">
+        SELECT * FROM swine.nutrient_composition WHERE Bio_Project = #{bio_project}
+    </select>
+
+</mapper>

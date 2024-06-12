@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.swinedatebaseproject.mapper.UploadMapper">
+
+    <insert id="insertUpload" parameterType="com.example.swinedatebaseproject.domain.Upload" useGeneratedKeys="true" keyProperty="fileId">
+        insert into swine.upload
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="email != null and email != ''">email,</if>
+            <if test="type != null">Type,</if>
+            <if test="paperTitle != null">paper_title,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="introduction != null">introduction,</if>
+            <if test="metaDataUrl != null">meta_data_url,</if>
+            <if test="classificationUrl != null">classification_url,</if>
+            <if test="lefseUrl != null">LEfse_url,</if>
+            <if test="picrust2Url != null">Picrust2_url,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="feedback != null">feedback,</if>
+            <if test="analysisResult != null">analysis_result,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="email != null and email != ''">#{email},</if>
+            <if test="type != null">#{type},</if>
+            <if test="paperTitle != null">#{paperTitle},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="introduction != null">#{introduction},</if>
+            <if test="metaDataUrl != null">#{metaDataUrl},</if>
+            <if test="classificationUrl != null">#{classificationUrl},</if>
+            <if test="lefseUrl != null">#{lefseUrl},</if>
+            <if test="picrust2Url != null">#{picrust2Url},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="feedback != null">#{feedback},</if>
+            <if test="analysisResult != null">#{analysisResult},</if>
+            NOW()
+        </trim>
+    </insert>
+
+</mapper>

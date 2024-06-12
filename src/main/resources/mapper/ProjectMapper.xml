@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.swinedatebaseproject.mapper.ProjectMapper">
+    <select id="findProjectDetails" resultType="com.example.swinedatebaseproject.domain.vo.ProjectDTO" parameterType="map">
+        SELECT
+            p.Bio_Project,
+            p.Phenotypes,
+            p.Phenotypes_info,
+            p.Experimental_design,
+            p.Country,
+            p.Category,
+            p.Breed,
+            p.GrowthStage,
+            p.IsolationLocation,
+            p.Age,
+            p.Weight,
+            p.Sex,
+            p.Title,
+            p.Description,
+            p.Link,
+            p.SequencingTool,
+            p.ReleaseDate,
+            p.Assay_type,
+            sr.Runs AS sampleRuns,
+            l.Microbial_name AS microbialName,
+            nc.Dm,
+            nc.Cp,
+            nc.Ee,
+            nc.Cf,
+            nc.Nfe,
+            nc.Ash,
+            nc.Ndf,
+            nc.Adf,
+            nc.Starch,
+            nc.Ca,
+            nc.Tp,
+            nc.Ep,
+            m.id AS microbialId,
+            m.specific_taxonomy AS specificTaxonomy,
+            m.level AS level,
+            m.count AS microbialCount,
+            m.abundance AS abundance
+        FROM swine.project p
+                 LEFT JOIN swine.sample_runs sr ON p.Bio_Project = sr.Bio_Project
+                 LEFT JOIN swine.lefse l ON p.Bio_Project = l.Bio_Project
+                 LEFT JOIN swine.nutrient_composition nc ON p.Bio_Project = nc.Bio_Project
+                 LEFT JOIN swine.microbial m ON p.Bio_Project = m.BioProject
+        WHERE p.Bio_Project = #{name}
+        ORDER BY p.Bio_Project
+            LIMIT #{currentPage}, #{pageSize}
+    </select>
+
+    <!-- ProjectMapper.xml -->
+    <select id="findProjectsByCondition" resultType="com.example.swinedatebaseproject.domain.Project">
+        SELECT *
+        FROM swine.project
+        <where>
+            <if test="Project != null and Project != ''">AND Bio_Project LIKE CONCAT('%', #{Project}, '%') </if>
+            <if test="Phenotypes != null and Phenotypes != ''">AND Phenotypes LIKE CONCAT('%', #{Phenotypes}, '%') </if>
+            <if test="ExperimentalDesign != null and ExperimentalDesign != ''">AND Experimental_design LIKE CONCAT('%', #{ExperimentalDesign}, '%') </if>
+            <if test="country != null and country != ''">AND Country LIKE CONCAT('%', #{country}, '%') </if>
+            <if test="Category != null and Category != ''">AND Category LIKE CONCAT('%', #{Category}, '%') </if>
+            <if test="Breed != null and Breed != ''">AND Breed LIKE CONCAT('%', #{Breed}, '%') </if>
+            <if test="GrowthStage != null and GrowthStage != ''">AND GrowthStage LIKE CONCAT('%', #{GrowthStage}, '%') </if>
+            <if test="IsolationLocation != null and IsolationLocation != ''">AND IsolationLocation LIKE CONCAT('%', #{IsolationLocation}, '%') </if>
+            <if test="Age != null">AND Age LIKE CONCAT('%', #{Age}, '%') </if>
+            <if test="Weight != null and Weight != ''">AND Weight LIKE CONCAT('%', #{Weight}, '%') </if>
+            <if test="Sex != null and Sex != ''">AND Sex LIKE CONCAT('%', #{Sex}, '%') </if>
+            <if test="SequencingTool != null and SequencingTool != ''">AND SequencingTool LIKE CONCAT('%', #{SequencingTool}, '%') </if>
+            <if test="SampleNumber != null">AND SampleNumber LIKE CONCAT('%', #{SampleNumber}, '%') </if>
+            <if test="Layout != null and Layout != ''">AND Layout LIKE CONCAT('%', #{Layout}, '%') </if>
+            <if test="Title != null and Title != ''">AND Title LIKE CONCAT('%', #{Title}, '%') </if>
+            <if test="Link != null and Link != ''">AND Link LIKE CONCAT('%', #{Link}, '%') </if>
+            <if test="ReleaseDate != null and ReleaseDate != ''">AND ReleaseDate LIKE CONCAT('%', #{ReleaseDate}, '%') </if>
+        </where>
+    </select>
+
+
+    <select id="getLefseCountByBioProject" resultType="int">
+        SELECT COUNT(*) FROM swine.lefse WHERE Bio_Project = #{bioProject}
+    </select>
+
+    <select id="getNutrientCompositionCountByBioProject" resultType="int">
+        SELECT COUNT(*) FROM swine.nutrient_composition WHERE Bio_Project = #{bioProject}
+    </select>
+
+    <select id="getSampleRunsCountByBioProject" resultType="int">
+        SELECT COUNT(*) FROM swine.sample_runs WHERE Bio_Project = #{bioProject}
+    </select>
+
+    <select id="getMicrobialCountByBioProject" resultType="int">
+        SELECT COUNT(*) FROM microbial WHERE BioProject = #{bioProject}
+    </select>
+
+    <resultMap id="countLevelResultMap" type="com.example.swinedatebaseproject.domain.vo.CountLevelVO">
+        <result property="count" column="count" />
+        <result property="level" column="level" />
+    </resultMap>
+
+    <select id="countLevelByName" resultType="com.example.swinedatebaseproject.domain.vo.CountLevelVO">
+        SELECT COUNT(DISTINCT microbial_name) AS count, level
+        FROM microbial
+        WHERE microbial_name = #{name}
+        GROUP BY level
+    </select>
+
+    <resultMap id="countCategoryResultMap" type="com.example.swinedatebaseproject.domain.vo.CountCategoryVO">
+        <result property="countProject" column="count" />
+        <result property="category" column="category" />
+    </resultMap>
+
+    <resultMap id="countCountryResultMap" type="com.example.swinedatebaseproject.domain.vo.CountCountryVO">
+        <result property="countProject" column="projectCount" />
+        <result property="country" column="country" />
+    </resultMap>
+
+    <resultMap id="countCountryDetailResultMap" type="com.example.swinedatebaseproject.domain.vo.CountRunsVO">
+        <result property="countProject" column="projectCount" />
+        <result property="countRuns" column="runCount" />
+        <result property="country" column="country" />
+    </resultMap>
+
+    <resultMap id="countLocationResultMap" type="com.example.swinedatebaseproject.domain.vo.CountIsolationVO">
+        <result property="countProject" column="count" />
+        <result property="isolation" column="location" />
+    </resultMap>
+
+    <select id="countCategory" resultMap="countCategoryResultMap">
+        SELECT count(Bio_Project) AS count, Category FROM swine.sample_runs WHERE Category IS NOT NULL GROUP BY Category
+    </select>
+
+    <select id="countCountry" resultMap="countCountryResultMap">
+        SELECT count(distinct(Bio_Project)) AS projectCount, Country FROM swine.sample_runs GROUP BY Country
+    </select>
+
+    <select id="countRuns" resultMap="countCountryDetailResultMap">
+        SELECT count(distinct(Bio_Project)) AS projectCount, count(Runs) AS runCount, Country FROM swine.sample_runs GROUP BY Country
+    </select>
+
+    <select id="countIsolation" resultMap="countLocationResultMap">
+        SELECT count(distinct(Bio_Project)) AS count, Isolation_Location AS location FROM swine.sample_runs GROUP BY Isolation_Location
+    </select>
+
+    <resultMap id="projectResultMap" type="com.example.swinedatebaseproject.domain.vo.ProjectVO">
+        <id property="project" column="bio_project"/>
+        <result property="phenotypes" column="phenotypes"/>
+        <result property="experimentalDesign" column="experimental_design"/>
+        <result property="country" column="country"/>
+        <result property="category" column="category"/>
+        <result property="breed" column="breed"/>
+        <result property="growthStage" column="growthstage"/>
+        <result property="isolationLocation" column="isolationlocation"/>
+        <result property="age" column="age"/>
+        <result property="weight" column="weight"/>
+        <result property="sex" column="sex"/>
+        <result property="sequencingTool" column="sequencingtool"/>
+        <result property="title" column="title"/>
+        <result property="link" column="link"/>
+        <result property="releaseDate" column="ReleaseDate"/>
+        <result property="totalNumbersOfRuns" column="totalNumbersOfRuns"/>
+        <result property="description" column="Description"/>
+        <result property="assayType" column="Assay_type"/>
+    </resultMap>
+
+
+    <!-- SQL查询项目 -->
+    <select id="searchProject" resultMap="projectResultMap">
+        SELECT p.*, COUNT(sr.Runs) as totalNumbersOfRuns
+        FROM swine.project p
+        LEFT JOIN swine.sample_runs sr ON p.Bio_Project = sr.Bio_Project
+        WHERE 1 = 1
+        <if test="type != null and type != ''">
+            AND p.Category LIKE CONCAT('%', #{type}, '%')
+        </if>
+        <if test="breed != null and breed != ''">
+            AND p.Breed  LIKE CONCAT('%', #{breed}, '%')
+        </if>
+        <if test="growthStage != null and growthStage != ''">
+            AND p.GrowthStage = #{growthStage}
+        </if>
+        <if test="phenotypes != null and phenotypes != ''">
+            AND p.Phenotypes LIKE CONCAT('%', #{phenotypes}, '%')
+        </if>
+        <if test="isolationLocation != null and isolationLocation != ''">
+            AND p.IsolationLocation = #{isolationLocation}
+        </if>
+        <if test="country != null and country != ''">
+            AND p.Country = #{country}
+        </if>
+        GROUP BY p.Bio_Project
+
+    </select>
+
+    <select id="getCountryProjectCounts" resultType="com.example.swinedatebaseproject.domain.vo.CountryProjectCount">
+        SELECT Country, COUNT(*) AS projectCount
+        FROM swine.project
+        GROUP BY Country
+    </select>
+
+    <resultMap id="lefseResultMap" type="com.example.swinedatebaseproject.domain.vo.LefseVO">
+        <id property="lefseId" column="Lefse_id"/>
+        <result property="bioProject" column="Bio_Project"/>
+        <result property="phenotypesExperimentDesign" column="Phenotypes_Experiment_Design"/>
+        <result property="microbialName" column="Microbial_name"/>
+        <result property="group" column="group_alias"/>
+        <result property="ldaScore" column="Lda_Score"/>
+    </resultMap>
+
+    <select id="getLefseByBioProject" resultMap="lefseResultMap">
+        SELECT Lefse_id, Bio_Project, Phenotypes_Experiment_Design, Microbial_name, `Group` AS group_alias, Lda_Score
+        FROM swine.lefse
+        WHERE Bio_Project = #{bioProject}
+    </select>
+
+
+    <!-- 查询文献总数 -->
+    <select id="getLiteraturesCount" resultType="int">
+        SELECT COUNT(DISTINCT publication) FROM project
+    </select>
+
+    <!-- 查询项目总数 -->
+    <select id="getProjectsCount" resultType="int">
+        SELECT COUNT(*) FROM project
+    </select>
+
+    <!-- 查询运行总数 -->
+    <select id="getRunsCount" resultType="int">
+        SELECT COUNT(*) FROM sample_runs
+    </select>
+
+    <!-- 查询微生物名字不重复的总数 -->
+    <select id="getMicrobiomeCount" resultType="int">
+        SELECT COUNT(DISTINCT microbial_name) FROM microbial
+    </select>
+
+    <resultMap id="ShowDataVOResultMap" type="com.example.swinedatebaseproject.domain.vo.ShowDataVO">
+        <result column="literatures" property="literatures"/>
+        <result column="projects" property="projects"/>
+        <result column="runs" property="runs"/>
+        <result column="microbiome" property="microbiome"/>
+    </resultMap>
+
+    <!-- 综合查询 -->
+    <select id="getShowDataVOs" resultMap="ShowDataVOResultMap">
+        SELECT
+                (SELECT COUNT(DISTINCT Title) FROM project) as literatures,
+                (SELECT COUNT(*) FROM project) as projects,
+                (SELECT COUNT(*) FROM sample_runs) as runs,
+                (SELECT COUNT(DISTINCT microbial_name) FROM microbial) as microbiome
+
+    </select>
+
+    <!-- SQL查询项目 -->
+    <select id="searchProjectByName" resultMap="projectResultMap">
+        SELECT p.*, COUNT(sr.Runs) as totalNumbersOfRuns
+        FROM swine.project p
+                 LEFT JOIN swine.sample_runs sr ON p.Bio_Project = sr.Bio_Project
+        WHERE
+                CONCAT_WS(' ', p.Bio_Project, p.Phenotypes, p.Phenotypes_info, p.Experimental_design,
+                          p.Country, p.Category, p.Breed, p.GrowthStage, p.IsolationLocation,
+                          p.Age, p.Weight, p.Sex, p.Title, p.Description, p.Link, p.SequencingTool,
+                          p.ReleaseDate, p.Assay_type) LIKE CONCAT('%', #{name}, '%')
+        GROUP BY p.Bio_Project
+
+    </select>
+
+
+    <!-- ProjectMapper.xml -->
+    <select id="searchProjectInfo" resultMap="projectResultMap">
+        SELECT p.*, COUNT(sr.Runs) as totalNumbersOfRuns
+        FROM swine.project p
+        LEFT JOIN swine.sample_runs sr ON p.Bio_Project = sr.Bio_Project
+        WHERE 1 = 1
+        <if test="phenotypes != null and phenotypes != ''">
+            AND p.Phenotypes LIKE CONCAT('%', #{phenotypes}, '%')
+        </if>
+        <if test="experimentalDesign != null and experimentalDesign != ''">
+            AND p.Experimental_Design LIKE CONCAT('%', #{experimentalDesign}, '%')
+        </if>
+        <if test="country != null and country != ''">
+            AND p.Country LIKE CONCAT('%', #{country}, '%')
+        </if>
+        <if test="category != null and category != ''">
+            AND p.Category LIKE CONCAT('%', #{category}, '%')
+        </if>
+        <if test="breed != null and breed != ''">
+            AND p.Breed LIKE CONCAT('%', #{breed}, '%')
+        </if>
+        <if test="growthStage != null and growthStage != ''">
+            AND p.Growth_Stage LIKE CONCAT('%', #{growthStage}, '%')
+        </if>
+        <if test="isolationLocation != null and isolationLocation != ''">
+            AND p.Isolation_Location LIKE CONCAT('%', #{isolationLocation}, '%')
+        </if>
+        <if test="sex != null and sex != ''">
+            AND p.Sex LIKE CONCAT('%', #{sex}, '%')
+        </if>
+        GROUP BY p.Bio_Project
+    </select>
+
+    <resultMap id="microbeResultMap" type="com.example.swinedatebaseproject.domain.Microbe">
+        <id property="microbeId" column="microbe_id" />
+        <result property="taxonomy" column="taxonomy" />
+        <result property="microbeName" column="microbe_Name" />
+        <result property="col" column="col" />
+        <result property="days" column="days" />
+        <result property="abundance" column="abundance" />
+        <result property="pvaluedpftpf" column="P_value_dpf_tpf" />
+        <result property="pvalueAge" column="P_value_age" />
+        <result property="microbedpftpfdifference" column="microbe_dpf_tpf_difference" />
+        <result property="microbeagedifference" column="microbe_age_difference" />
+    </resultMap>
+
+
+    <!-- 查询微生物信息 -->
+    <select id="searchMicrobeByName" resultMap="microbeResultMap">
+        SELECT * FROM swine.microbe
+        WHERE 1 = 1
+        <if test="name != null and name != ''">
+            AND microbe_Name LIKE CONCAT('%', #{name}, '%')
+        </if>
+    </select>
+
+
+
+
+
+
+</mapper>
