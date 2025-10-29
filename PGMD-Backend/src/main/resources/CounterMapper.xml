@@ -1,0 +1,15 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<beans xmlns="http://www.springframework.org/schema/beans"-->
+<!--       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mybatis="http://www.springframework.org/schema/c"-->
+<!--       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">-->
+
+
+
+<!--    &lt;!&ndash; MyBatis 映射器文件 &ndash;&gt;-->
+<!--    <mybatis:mapper namespace="com.example.swinedatebaseproject.mapper.CounterMapper">-->
+<!--        <mybatis:select id="selectByPage" resultType="com.example.swinedatebaseproject.domain.Counter">-->
+<!--            SELECT * FROM counter WHERE page = #{page}-->
+<!--        </mybatis:select>-->
+<!--    </mybatis:mapper>-->
+
+<!--</beans>-->

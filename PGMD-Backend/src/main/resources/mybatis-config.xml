@@ -1,0 +1,8 @@
+
+<!--    <configuration  xmlns="http://mybatis.org/schema/mybatis-config">-->
+<!--        <mappers>-->
+<!--            <mapper resource="com/example/swinedatebaseproject/mapper/CounterMapper.xml"/>-->
+<!--&lt;!&ndash;            <mapper resource="src/main/resources/CounterMapper.xml"/>&ndash;&gt;-->
+<!--            &lt;!&ndash; 其他 mapper 引用 &ndash;&gt;-->
+<!--        </mappers>-->
+<!--    </configuration>-->
