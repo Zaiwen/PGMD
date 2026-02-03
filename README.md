@@ -18,36 +18,36 @@ PGMDB/
 ├── delete_0.py              # Zero-abundance cleanup script
 └── window.py                # Graphical User Interface (GUI)
 
-3. Core Functionalities
+## 3. Core Functionalities
 Detailed File Roles
 # Microbe.py
 The primary engine for microbial data processing. It handles taxonomy resolution (from Phylum to Species), re-calculates relative abundances, and extracts standardized LDA scores from LEfSe analysis results.
 
-# project.py
+### project.py
 Responsible for cleaning and merging project-level metadata. It standardizes experimental descriptions and phenotype information (e.g., merging birth weight and weaning data) into a unified, machine-readable format.
 
-# nutrient_composition.py
+### nutrient_composition.py
 Manages the integration of dietary data. It automatically fills missing labels in nutritional tables and maps 12 core dietary components (such as Crude Protein, Calcium, and Starch) to their respective BioProject IDs.
 
-# util.py
+### util.py
 A foundational utility library providing essential cleaning functions used across other modules, such as removing non-standard taxonomic prefixes (e.g., k__, p__), stripping square brackets from taxon names, and deleting rows with zero total abundance.
 
-# init.py
+### init.py
 Acts as a data integrity validator. It performs set-based comparisons of BioProject IDs across sample, project, and microbial tables to identify any discrepancies or missing records during the data integration phase.
 
-# find_repetition.py
+### find_repetition.py
 A specialized validation tool designed to ensure data uniqueness by detecting and reporting redundant sample "Run" records within the dataset, preventing statistical bias from duplicate entries.
 
-# Literature.py
+### Literature.py
 Transforms manually collected literature metadata into structured source-target formats, enabling the generation of network diagrams for research theme analysis.
 
-# delete_0.py
+### delete_0.py
 A dedicated cleanup script for the rapid removal of rows where microbial abundance values are zero, ensuring the final processed dataset remains concise and focused on present taxa.
 
-# window.py
+### window.py
 Provides a user-friendly Graphical User Interface (GUI) built with Tkinter. This allows researchers to perform complex data transformations and name modifications through interactive buttons without manually editing script parameters.
 
-4. Usage Flow
+##4. Usage Flow
 Option 1: Graphical User Interface (GUI)
 Run window.py to launch the interactive interface.
 
